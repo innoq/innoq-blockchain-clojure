@@ -2,8 +2,6 @@
   (:require [digest :refer [sha-256]]
             [clojure.string :as str]))
 
-(def genesis "{\"index\":1,\"timestamp\":0,\"proof\":1917336,\"transactions\":[{\"id\":\"b3c973e2-db05-4eb5-9668-3e81c7389a6d\",\"timestamp\":0,\"payload\":\"I am Heribert Innoq\"}],\"previousBlockHash\":\"0\"}")
-
 (defn transaction [id timestamp payload]
   {:id id
    :timestamp timestamp
@@ -52,12 +50,12 @@
 (defn block->hash [block]
   (sha-256 (block->json block)))
 
-(defn valid-hash? [hash] 
+(defn valid-hash? [hash]
   (if hash
     (str/starts-with? hash "000")
     false))
 
-(defn inc-strategy 
+(defn inc-strategy
   ([] {:proof 0, :tries 1})
   ([{:keys [proof tries]}] {:proof (inc proof), :tries (inc tries)}))
 
@@ -75,7 +73,7 @@
           (do (println (str "Tries: " (:tries proof-state)))
               block)
           (recur (strategy proof-state)))))))
-  
+
 (defn -main [& args]
   (println (block->hash genesis-block))
   (println (block->json (next-block genesis-block [] rand-strategy))))
