@@ -57,11 +57,16 @@
     (str/starts-with? hash "000")
     false))
 
-(defn next-block [block transactions]
-  (let [hash (block->hash block)]))
-    
+(defn next-block [previous-block transactions strategy]
+  ;TODO check for valid previous hash
+  (let [previous-block-hash (block->hash previous-block)]
+    (loop [proof 0]
+      (let [block (block (inc (:index previous-block)) 0 proof transactions previous-block-hash)
+            hash (block->hash block)]
+        (if (valid-hash? hash)
+          block
+          (recur (inc proof)))))))
   
-  
-
 (defn -main [& args]
-  (println (block->hash genesis-block)))
+  (println (block->hash genesis-block))
+  (println (block->json (next-block genesis-block [] nil))))
