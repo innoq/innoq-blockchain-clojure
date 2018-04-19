@@ -73,29 +73,23 @@
   Strategy
   (next-proof [this] (update (update this :proof inc) :tries inc)))
 
+(defn next-random [_] (rand-int 10000000))
 (defrecord RandStrategy [tries proof]
   Strategy
-  (next-proof [this] (update (update this :proof rand-int 100000000) :tries inc)))
-
-(defn inc-strategy 
-  ([] {:proof 0, :tries 1})
-  ([{:keys [proof tries]}] {:proof (inc proof), :tries (inc tries)}))
-
-(defn rand-strategy
-  ([] {:proof 0, :tries 1})
-  ([{:keys [tries]}] {:proof (rand-int 100000000), :tries (inc tries)}))
+  (next-proof [this] (update (update this :proof next-random) :tries inc)))
 
 (defn next-block [previous-block transactions strategy]
   ;TODO check for valid previous hash
   (let [previous-block-hash (block->hash previous-block)]
-    (loop [proof-state (strategy)]
+    (loop [proof-state strategy]
       (let [block (block (inc (:index previous-block)) 0 (:proof proof-state) transactions previous-block-hash)
             hash (block->hash block)]
         (if (valid-hash? hash)
           (do (println (str "Tries: " (:tries proof-state)))
               block)
-          (recur (strategy proof-state)))))))
+          (recur (next-proof proof-state)))))))
 
 (defn -main [& args]
   (println (block->hash genesis-block))
-  (println (block->json (next-block genesis-block [] inc-strategy))))
+  (println (block->json (next-block genesis-block [] (->IncStrategy 1 0))))
+  (println (block->json (next-block genesis-block [] (->RandStrategy 1 0)))))
