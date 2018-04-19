@@ -61,6 +61,10 @@
   ([] {:proof 0, :tries 1})
   ([{:keys [proof tries]}] {:proof (inc proof), :tries (inc tries)}))
 
+(defn rand-strategy
+  ([] {:proof 0, :tries 1})
+  ([{:keys [tries]}] {:proof (rand-int 100000000), :tries (inc tries)}))
+
 (defn next-block [previous-block transactions strategy]
   ;TODO check for valid previous hash
   (let [previous-block-hash (block->hash previous-block)]
@@ -74,4 +78,4 @@
   
 (defn -main [& args]
   (println (block->hash genesis-block))
-  (println (block->json (next-block genesis-block [] inc-strategy))))
+  (println (block->json (next-block genesis-block [] rand-strategy))))
