@@ -66,7 +66,7 @@
     (str/starts-with? hash "000")
     false))
 
-(defprotocol Strategy 
+(defprotocol Strategy
   (next-proof [this]))
 
 (defrecord IncStrategy [tries proof]
