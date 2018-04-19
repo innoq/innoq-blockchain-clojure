@@ -39,10 +39,8 @@
        "\"previousBlockHash\":\"" previous-block-hash "\""
        "}"))
 
-(defn to-json [block] block)
-
 (defn to-hash [block]
-  (sha-256 (to-json block)))
+  (sha-256 (block->json block)))
 
 (defn -main [& args]
   (println (to-hash genesis)))
