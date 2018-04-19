@@ -2,6 +2,17 @@
   (:require [digest :refer [sha-256]]
             [clojure.string :as str]))
 
+(defprotocol JsonValueSerializer
+  (to-json [this]))
+
+(extend-type String
+  JsonValueSerializer
+    (to-json [this] (str "\"" this "\"")))
+
+(extend-type Number
+  JsonValueSerializer
+    (to-json [this] this))
+
 (defn transaction [id timestamp payload]
   {:id id
    :timestamp timestamp
@@ -25,9 +36,9 @@
 
 (defn transaction->json [{:keys [id timestamp payload]}]
   (str "{"
-       "\"id\":\"" id "\","
-       "\"timestamp\":" timestamp ","
-       "\"payload\":\"" payload "\""
+       "\"id\":" (to-json id) ","
+       "\"timestamp\":" (to-json timestamp) ","
+       "\"payload\":" (to-json payload)
        "}"))
 
 ; TODO: serialize transactions with commas
@@ -40,11 +51,11 @@
 
 (defn block->json [{:keys [index timestamp proof transactions previous-block-hash]}]
   (str "{"
-       "\"index\":" index ","
-       "\"timestamp\":" timestamp ","
-       "\"proof\":" proof ","
+       "\"index\":" (to-json index) ","
+       "\"timestamp\":" (to-json timestamp) ","
+       "\"proof\":" (to-json proof) ","
        "\"transactions\":" (transactions->json transactions) ","
-       "\"previousBlockHash\":\"" previous-block-hash "\""
+       "\"previousBlockHash\":" (to-json previous-block-hash)
        "}"))
 
 (defn block->hash [block]
