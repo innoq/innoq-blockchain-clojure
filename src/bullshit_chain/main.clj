@@ -66,7 +66,18 @@
     (str/starts-with? hash "000")
     false))
 
-(defn inc-strategy
+(defprotocol Strategy 
+  (next-proof [this]))
+
+(defrecord IncStrategy [tries proof]
+  Strategy
+  (next-proof [this] (update (update this :proof inc) :tries inc)))
+
+(defrecord RandStrategy [tries proof]
+  Strategy
+  (next-proof [this] (update (update this :proof rand-int 100000000) :tries inc)))
+
+(defn inc-strategy 
   ([] {:proof 0, :tries 1})
   ([{:keys [proof tries]}] {:proof (inc proof), :tries (inc tries)}))
 
@@ -87,4 +98,4 @@
 
 (defn -main [& args]
   (println (block->hash genesis-block))
-  (println (block->json (next-block genesis-block [] rand-strategy))))
+  (println (block->json (next-block genesis-block [] inc-strategy))))

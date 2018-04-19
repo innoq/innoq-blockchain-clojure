@@ -19,3 +19,6 @@
     nil false
     "" false
     "000000" true))
+
+(deftest test-inc-strategy
+  (is (= (->IncStrategy 2 1) (next-proof (->IncStrategy 1 0)))))
