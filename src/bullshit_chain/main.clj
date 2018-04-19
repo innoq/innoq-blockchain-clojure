@@ -57,16 +57,21 @@
     (str/starts-with? hash "000")
     false))
 
+(defn inc-strategy 
+  ([] {:proof 0, :tries 1})
+  ([{:keys [proof tries]}] {:proof (inc proof), :tries (inc tries)}))
+
 (defn next-block [previous-block transactions strategy]
   ;TODO check for valid previous hash
   (let [previous-block-hash (block->hash previous-block)]
-    (loop [proof 0]
-      (let [block (block (inc (:index previous-block)) 0 proof transactions previous-block-hash)
+    (loop [proof-state (strategy)]
+      (let [block (block (inc (:index previous-block)) 0 (:proof proof-state) transactions previous-block-hash)
             hash (block->hash block)]
         (if (valid-hash? hash)
-          block
-          (recur (inc proof)))))))
+          (do (println (str "Tries: " (:tries proof-state)))
+              block)
+          (recur (strategy proof-state)))))))
   
 (defn -main [& args]
   (println (block->hash genesis-block))
-  (println (block->json (next-block genesis-block [] nil))))
+  (println (block->json (next-block genesis-block [] inc-strategy))))
