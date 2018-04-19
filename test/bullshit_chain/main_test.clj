@@ -10,3 +10,11 @@
          (block->hash genesis-block)))) 
 
 
+(deftest test-valid-hash?
+  (are [hash expected] (= (valid-hash? hash)
+                          expected)
+    "000000b642b67d8bea7cffed1ec990719a3f7837de5ef0f8ede36537e91cdc0e" true
+    "deadbeefb642b67d8bea7cffed1ec9907a3f7837de5ef0f8ede36537e91cdc0e" false
+    nil false
+    "" false
+    "000000" true))

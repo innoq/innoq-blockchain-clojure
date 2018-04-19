@@ -1,5 +1,6 @@
 (ns bullshit-chain.main
-  (:require [digest :refer [sha-256]]))
+  (:require [digest :refer [sha-256]]
+            [clojure.string :as str]))
 
 (def genesis "{\"index\":1,\"timestamp\":0,\"proof\":1917336,\"transactions\":[{\"id\":\"b3c973e2-db05-4eb5-9668-3e81c7389a6d\",\"timestamp\":0,\"payload\":\"I am Heribert Innoq\"}],\"previousBlockHash\":\"0\"}")
 
@@ -50,6 +51,17 @@
 
 (defn block->hash [block]
   (sha-256 (block->json block)))
+
+(defn valid-hash? [hash] 
+  (if hash
+    (str/starts-with? hash "000000")
+    false))
+
+(defn next-block [block transactions]
+  (let [hash (block->hash block)]))
+    
+  
+  
 
 (defn -main [& args]
   (println (block->hash genesis-block)))
