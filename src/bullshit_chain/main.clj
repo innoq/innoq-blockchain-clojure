@@ -35,7 +35,7 @@
        "\"index\":" index ","
        "\"timestamp\":" timestamp ","
        "\"proof\":" proof ","
-       "\transactions\":" (transactions->json transactions) ","
+       "\"transactions\":" (transactions->json transactions) ","
        "\"previousBlockHash\":\"" previous-block-hash "\""
        "}"))
 
