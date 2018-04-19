@@ -54,7 +54,7 @@
 
 (defn valid-hash? [hash] 
   (if hash
-    (str/starts-with? hash "000000")
+    (str/starts-with? hash "000")
     false))
 
 (defn next-block [block transactions]
