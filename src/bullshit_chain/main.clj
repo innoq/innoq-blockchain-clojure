@@ -25,11 +25,19 @@
                           "0"))
 
 (defn transaction->json [{:keys [id timestamp payload]}]
-  (str "{\"id\":\"" id "\",\"timestamp\":" timestamp ",\"payload\":\"" payload "\"}"))
+  (str "{"
+       "\"id\":\"" id "\","
+       "\"timestamp\":" timestamp ","
+       "\"payload\":\"" payload "\""
+       "}"))
 
 ; TODO: serialize transactions with commas
 (defn transactions->json [transactions]
-  (str "[" (reduce str (map transaction->json transactions))  "]"))
+  (str "["
+       (->> transactions
+            (map transaction->json)
+            (reduce str))
+       "]"))
 
 (defn block->json [{:keys [index timestamp proof transactions previous-block-hash]}]
   (str "{"
