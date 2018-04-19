@@ -27,6 +27,7 @@
 (defn transaction->json [{:keys [id timestamp payload]}]
   (str "{\"id\":\"" id "\",\"timestamp\":" timestamp ",\"payload\":\"" payload "\"}"))
 
+; TODO: serialize transactions with commas
 (defn transactions->json [transactions]
   (str "[" (reduce str (map transaction->json transactions))  "]"))
 
