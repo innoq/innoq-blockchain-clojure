@@ -80,13 +80,18 @@
 
 (defn next-block [previous-block transactions strategy]
   ;TODO check for valid previous hash
-  (let [previous-block-hash (block->hash previous-block)]
+  (let [previous-block-hash (block->hash previous-block)
+        start (System/currentTimeMillis)]
     (loop [proof-state strategy]
       (let [block (block (inc (:index previous-block)) 0 (:proof proof-state) transactions previous-block-hash)
             hash (block->hash block)]
         (if (valid-hash? hash)
-          (do (println (str "Tries: " (:tries proof-state)))
-              block)
+          (let [time (- (System/currentTimeMillis) start)]
+            (do (printf "Mined new Block with %s tries in %sms (%.2f H/s)\n"
+                        (:tries proof-state)
+                        time
+                        (double (* 1000 (/ (:tries proof-state) time))))
+              block))
           (recur (next-proof proof-state)))))))
 
 (defn take-time [code]
