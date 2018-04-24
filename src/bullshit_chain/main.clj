@@ -89,7 +89,16 @@
               block)
           (recur (next-proof proof-state)))))))
 
+(defn take-time [code]
+  (let [start (System/currentTimeMillis) return-values (code)]
+    (let [end (System/currentTimeMillis)]
+      [(- end start) return-values])))
+
+(defn print-hash-time [[time hash]]
+      (printf "%sms for %s\n" time hash) hash)
+  
 (defn -main [& args]
-  (println (block->hash genesis-block))
-  (println (block->json (next-block genesis-block [] (->IncStrategy 1 0))))
-  (println (block->json (next-block genesis-block [] (->RandStrategy 1 0)))))
+  
+  (print-hash-time (take-time #(block->hash genesis-block)))
+  (print-hash-time (take-time #(block->json (next-block genesis-block [] (->IncStrategy 1 0))))))
+  ;(println (block->json (next-block genesis-block [] (->RandStrategy 1 0))))
