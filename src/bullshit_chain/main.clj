@@ -67,16 +67,19 @@
     false))
 
 (defprotocol Strategy
-  (next-proof [this]))
+  (next-proof [this])
+  (get-name [this]))
 
 (defrecord IncStrategy [tries proof]
   Strategy
-  (next-proof [this] (update (update this :proof inc) :tries inc)))
+  (next-proof [this] (update (update this :proof inc) :tries inc))
+  (get-name [this] "IncStrategy"))
 
 (defn next-random [_] (rand-int 10000000))
 (defrecord RandStrategy [tries proof]
   Strategy
-  (next-proof [this] (update (update this :proof next-random) :tries inc)))
+  (next-proof [this] (update (update this :proof next-random) :tries inc))
+  (get-name [this] "RandStrategy"))
 
 (defn next-block [previous-block transactions strategy]
   ;TODO check for valid previous hash
@@ -87,10 +90,11 @@
             hash (block->hash block)]
         (if (valid-hash? hash)
           (let [time (- (System/currentTimeMillis) start)]
-            (do (printf "Mined new Block with %s tries in %sms (%.2f MH/s)\n"
+            (do (printf "Mined new Block with %s tries in %sms (%.2f MH/s) with %s\n"
                         (:tries proof-state)
                         time
-                        (double (/ (:tries proof-state) time)))
+                        (double (/ (:tries proof-state) time))
+                        (get-name proof-state))
               block))
           (recur (next-proof proof-state)))))))
 
