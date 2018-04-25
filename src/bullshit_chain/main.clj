@@ -87,10 +87,10 @@
             hash (block->hash block)]
         (if (valid-hash? hash)
           (let [time (- (System/currentTimeMillis) start)]
-            (do (printf "Mined new Block with %s tries in %sms (%.2f H/s)\n"
+            (do (printf "Mined new Block with %s tries in %sms (%.2f MH/s)\n"
                         (:tries proof-state)
                         time
-                        (double (* 1000 (/ (:tries proof-state) time))))
+                        (double (/ (:tries proof-state) time)))
               block))
           (recur (next-proof proof-state)))))))
 
