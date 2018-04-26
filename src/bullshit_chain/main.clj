@@ -108,6 +108,11 @@
   
 (defn -main [& args]
   
-  (print-hash-time (take-time #(block->hash genesis-block)))
-  (print-hash-time (take-time #(block->json (next-block genesis-block [] (->IncStrategy 1 0))))))
+  ;(print-hash-time (take-time #(block->hash genesis-block)))
+  ;(print-hash-time (take-time #(block->json (next-block genesis-block [] (->IncStrategy 1 0))))))
   ;(println (block->json (next-block genesis-block [] (->RandStrategy 1 0))))
+  
+  (.start (Thread. (fn [] (println (next-block genesis-block [] (->IncStrategy 1 0))))))
+  (.start (Thread. (fn [] (println (next-block genesis-block [] (->RandStrategy 1 0))))))
+  
+  (println "threads started"))
