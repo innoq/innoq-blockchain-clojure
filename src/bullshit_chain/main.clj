@@ -76,10 +76,10 @@
   (get-name [this] "IncStrategy"))
 
 (defn next-random [_] (rand-int 10000000))
-(defrecord RandStrategy [tries proof]
+(defrecord BlindChickenStrategy [tries proof]
   Strategy
   (next-proof [this] (update (update this :proof next-random) :tries inc))
-  (get-name [this] "RandStrategy"))
+  (get-name [this] "BlindChickenStrategy"))
 
 (defn next-block [previous-block transactions strategy]
   ;TODO check for valid previous hash
@@ -113,6 +113,6 @@
   ;(println (block->json (next-block genesis-block [] (->RandStrategy 1 0))))
   
   (.start (Thread. (fn [] (println (next-block genesis-block [] (->IncStrategy 1 0))))))
-  (.start (Thread. (fn [] (println (next-block genesis-block [] (->RandStrategy 1 0))))))
+  (.start (Thread. (fn [] (println (next-block genesis-block [] (->BlindChickenStrategy 1 0))))))
   
   (println "threads started"))
